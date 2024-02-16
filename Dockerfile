@@ -1,6 +1,6 @@
 # Estágio 1: Configuração do Kali Linux e Google Chrome
 FROM debian:buster-slim as kali
-
+ENV DISPLAY=:0
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get -y install wget gnupg xorg xauth libnss3 libgconf-2-4 libfontconfig1
@@ -28,7 +28,7 @@ RUN pip install --upgrade pip && \
     pip install openpyxl && \
     pip install psutil && \
     pip install unidecode && \
-    pip install pyautogui
+    pip install PyAutoGUI
 
 COPY . /app/
 
