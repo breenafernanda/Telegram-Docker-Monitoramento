@@ -27,4 +27,4 @@ RUN pip install --upgrade pip && \
 COPY . /app/
 
 # Comando para iniciar o script monitoramento.py
-CMD ["python", "monitoramento.py"]
+CMD ["python", "app-telegram-monitoramento.py"]
