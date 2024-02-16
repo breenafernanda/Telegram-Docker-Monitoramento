@@ -25,7 +25,8 @@ RUN pip install --upgrade pip && \
     pip install telegram && \
     pip install python-telegram-bot && \
     pip install pandas && \
-    pip install openpyxl
+    pip install openpyxl && \
+    pip install psutil
 
 COPY . /app/
 
