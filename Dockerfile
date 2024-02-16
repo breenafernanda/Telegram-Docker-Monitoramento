@@ -37,7 +37,7 @@ RUN pip install --upgrade pip && \
     pip install PyAutoGUI
 
 COPY . /app/
-RUN google-chrome-stable --version
+# RUN google-chrome-stable --version
 
 # Comando para iniciar o script monitoramento.py
 CMD ["python", "app-telegram-monitoramento.py"]
