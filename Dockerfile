@@ -27,7 +27,7 @@ RUN pip install --upgrade pip && \
     pip install pandas && \
     pip install openpyxl && \
     pip install psutil && \
-    pip install autoit
+    pip install unicode
 
 COPY . /app/
 
