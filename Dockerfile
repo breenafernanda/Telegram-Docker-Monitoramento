@@ -19,6 +19,12 @@ WORKDIR /app
 
 COPY requirements.txt /app/
 
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y xvfb
+
+# Set up virtual display
+ENV DISPLAY=:99
+
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install selenium webdriver-manager && \
@@ -29,13 +35,9 @@ RUN pip install --upgrade pip && \
     pip install psutil && \
     pip install unidecode && \
     pip install PyAutoGUI
-    
-# Install necessary dependencies
-RUN apt-get update && apt-get install -y xvfb
 
-# Set up virtual display
-ENV DISPLAY=:99
 COPY . /app/
+RUN google-chrome-stable --version
 
 # Comando para iniciar o script monitoramento.py
 CMD ["python", "app-telegram-monitoramento.py"]
