@@ -11,7 +11,7 @@ from config.webdriver import iniciar_navegador
 ## webdrivers imports
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import autoit
+# import autoit
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
