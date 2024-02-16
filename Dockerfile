@@ -27,7 +27,7 @@ RUN pip install --upgrade pip && \
     pip install pandas && \
     pip install openpyxl && \
     pip install psutil && \
-    pip install unicode
+    pip install unidecode
 
 COPY . /app/
 
