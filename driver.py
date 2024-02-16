@@ -38,7 +38,7 @@ from openpyxl.formatting.rule import IconSet, FormatObject, Rule
 from webdriver_manager.chrome import ChromeDriverManager
 import threading
 import pyautogui
-
+pyautogui.FAILSAFE = False
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
