@@ -1,0 +1,45 @@
+from openpyxl import load_workbook
+from datetime import datetime, timedelta
+
+# Função para obter a letra da coluna a partir do número
+def get_column_letter(col_num):
+    # Implementação simples, sem tratamento para colunas além de Z
+    return chr(ord('A') + col_num - 1)
+
+# Função para encontrar a coluna correspondente à data
+def encontrar_coluna(ws, data):
+    for col in range(1, ws.max_column + 1):
+        if ws.cell(row=1, column=col).value == data:
+            return col
+    return None
+
+# Ler o arquivo 'MONITORAMENTO_GERAL'
+wb_geral = load_workbook('MONITORAMENTO_GERAL.xlsx')
+ws_geral = wb_geral.active
+
+# Obter a data do dia anterior
+data_dia_anterior = (datetime.now() - timedelta(days=1)).strftime('%d/%m/%Y')
+
+# Verificar para cada usina
+usina = "NomeDaUsina"  # Substitua pelo nome real da usina
+coluna_usina = None
+geracao = ""
+# Verificar se a usina já está listada
+for row in range(2, ws_geral.max_row + 1):
+    if ws_geral.cell(row=ws_geral.max_row, column=2).value == usina:
+        coluna_usina = encontrar_coluna(ws_geral, data_dia_anterior)
+        break
+
+# Se a usina não existir, adicionar uma nova linha
+if coluna_usina is None:
+    nova_linha = [None] * (ws_geral.max_column + 1)
+    nova_linha[0] = ws_geral.max_row  # Index na coluna A
+    nova_linha[1] = usina
+    coluna_usina = ws_geral.max_column + 1
+    ws_geral.append(nova_linha)
+
+# Atualizar ou adicionar a informação de geração
+ws_geral.cell(row=ws_geral.max_row, column=coluna_usina, value=geracao)
+
+# Salvar o arquivo 'MONITORAMENTO_GERAL'
+wb_geral.save('MONITORAMENTO_GERAL.xlsx')
