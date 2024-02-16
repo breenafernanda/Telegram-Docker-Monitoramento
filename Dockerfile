@@ -1,6 +1,6 @@
 # Estágio 1: Configuração do Kali Linux e Google Chrome
 FROM debian:buster-slim as kali
-ENV DISPLAY=:0
+
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get -y install wget gnupg xorg xauth libnss3 libgconf-2-4 libfontconfig1
@@ -29,7 +29,12 @@ RUN pip install --upgrade pip && \
     pip install psutil && \
     pip install unidecode && \
     pip install PyAutoGUI
+    
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y xvfb
 
+# Set up virtual display
+ENV DISPLAY=:99
 COPY . /app/
 
 # Comando para iniciar o script monitoramento.py
