@@ -54,6 +54,30 @@ async def abrir_navegador(browser='chrome'):
         print(f'ERRO AO ABRIR NAVEGADOR -> {e}')
         return f'Erro ao iniciar browser: {e}'
 
+async def login_solarz(driver):
+    userpasswd_solarz = 'Kinsol21'
+    username_solarz = 'juliag.kinsol@gmail.com'
+
+    try:
+        print(f'>>> Realizando Login no SolarZ <<<')
+        driver.get('https://app.solarz.com.br/login?logout')
+
+        try:
+            driver.find_element(
+                By.ID, 'username').send_keys(username_solarz)
+            driver.find_element(By.ID, 'password').send_keys(
+                userpasswd_solarz)
+            driver.find_element(
+                By.CSS_SELECTOR, 'input[value="Entrar"]').click()
+            await asyncio.sleep(5)
+            print(f'>>> Login realizado com sucesso no SolarZ <<<')
+        except Exception as er:
+            print('>>> [ERROR]: Erro ao localizar elemento')
+            print(f'>>> [ERROR loginSolarZ]83: {er}')
+
+    except Exception as e: print(e)
+
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -73,10 +97,11 @@ async def run_command(command: str):
         try:
                 # await executar_no_terminal('pip install pyppeteer')
                 driver = await abrir_navegador(browser='chrome')
-                driver.get('https://www.google.com.br')
-                print(f'Acessou link do google')
-                return f' ✅  Webdriver acessado com sucesso   ✅'
-                
+                print(f' ✅  Webdriver obtido com sucesso   ✅')
+                await login_solarz(driver)
+                print(f' ✅  Logado com sucesso   ✅')
+                return f' ✅  Logado no SolarZ com sucesso   ✅'
+                 
         except Exception as e: return f'❌ Erro ao acessar webdriver: {e}'
     else:
         retorno = await executar_no_terminal(command)
