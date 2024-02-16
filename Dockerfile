@@ -24,8 +24,8 @@ RUN pip install --upgrade pip && \
     pip install selenium webdriver-manager && \
     pip install telegram && \
     pip install python-telegram-bot && \
-    pip install pandas
-    
+    pip install pandas && \
+    pip install openpyxl
 
 COPY . /app/
 
