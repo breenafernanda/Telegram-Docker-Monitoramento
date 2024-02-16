@@ -23,7 +23,8 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     pip install selenium webdriver-manager && \
     pip install telegram && \
-    pip install python-telegram-bot
+    pip install python-telegram-bot && \
+    pip install pandas
     
 
 COPY . /app/
