@@ -1,23 +1,16 @@
 # Estágio 1: Configuração do Kali Linux e Google Chrome
-# FROM kalilinux/kali-rolling as kali
-FROM debian:buster-slim
+FROM debian:buster-slim as chrome
+
 # Atualiza os repositórios e instalações necessárias
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get -y install wget gnupg xorg xauth
+    apt-get -y install wget gnupg xorg xauth xvfb
 
 # Adiciona o repositório do Google Chrome e instala o navegador
-
-# Baixe e instale a chave GPG do repositório do Chrome
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-
-# Adicione o repositório do Chrome e instale o Chrome
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
     apt-get update && \
     apt-get install -y google-chrome-stable
-
-# Defina o comando padrão (pode ser substituído ao executar o contêiner)
-CMD ["google-chrome-stable", "--version"]
 
 # Configuração para evitar erros com o D-Bus
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
@@ -25,9 +18,16 @@ ENV DBUS_SESSION_BUS_ADDRESS=/dev/null
 # Descobre o IP público do contêiner e imprime para o log
 RUN apt-get -y install curl jq
 
+# Configuração do Google Chrome para execução headless e no-sandbox
+RUN echo "*******************************\n INICIO DA INSTALAÇÃO\n***********************************" && \
+    apt-get update && \
+    apt-get install -y libnss3 libgconf-2-4 libfontconfig1
 
-# Configurando as variáveis de ambiente para a execução do script Python
-RUN echo $CREDENTIAL > /tmp/debug
+# Configuração para usar Xvfb
+ENV DISPLAY=:99
+
+# Comando para iniciar Xvfb e o Chrome
+CMD Xvfb :99 -ac & google-chrome-stable --version || echo "Google Chrome não está instalado corretamente!"
 
 # Estágio 2: Configuração da aplicação FastAPI
 FROM python:3.9
@@ -71,26 +71,15 @@ RUN pip install websockets
 EXPOSE 8000
 
 # Configuração do Google Chrome para execução headless e no-sandbox
-RUN echo "*******************************\n INICIO DA INSTALAÇÃO\n***********************************"
-# Atualiza os repositórios e instalações necessárias
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get -y install wget gnupg xorg xauth
-
-# Adiciona o repositório do Google Chrome e instala o navegador
-RUN apt-get update && \
-    apt-get install -y libnss3 libgconf-2-4 libfontconfig1
-    
-# Baixe e instale a chave GPG do repositório do Chrome
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-
-# Adicione o repositório do Chrome e instale o Chrome
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+RUN echo "*******************************\n INICIO DA INSTALAÇÃO\n***********************************" && \
     apt-get update && \
-    apt-get install -y google-chrome-stable
+    apt-get install -y libnss3 libgconf-2-4 libfontconfig1
 
-# Defina o comando padrão (pode ser substituído ao executar o contêiner)
-CMD ["google-chrome-stable", "--version"]
+# Configuração para usar Xvfb
+ENV DISPLAY=:99
+
+# Comando para iniciar Xvfb e o Chrome
+CMD Xvfb :99 -ac & google-chrome-stable --version || echo "Google Chrome não está instalado corretamente!"
 
 # RUN apt-get -y install libnss3-tools
 # RUN groupadd -r chrome && useradd -r -g chrome -G audio,video chrome && \
@@ -104,23 +93,4 @@ RUN export PUBLIC_IP=$(curl -s https://httpbin.org/ip | jq -r .origin) && \
 RUN google-chrome-stable --version || echo "Google Chrome não está instalado corretamente!"
 
 # Comando para iniciar a aplicação
-# CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
-
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install selenium webdriver-manager && \
-    pip install telegram && \
-    pip install python-telegram-bot && \
-    pip install pandas && \
-    pip install openpyxl && \
-    pip install psutil && \
-    pip install unidecode && \
-    pip install PyAutoGUI
-
-COPY . /app/
-# RUN google-chrome-stable --version
-
-# Comando para iniciar o script monitoramento.py
-CMD ["python", "app-telegram-monitoramento.py"]
-# CMD ["Xvfb", ":99", "-screen", "0", "1024x768x24", "&", "python", "app-telegram-monitoramento.py"]
-
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"]
