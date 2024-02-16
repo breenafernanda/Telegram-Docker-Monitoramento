@@ -27,7 +27,8 @@ RUN pip install --upgrade pip && \
     pip install pandas && \
     pip install openpyxl && \
     pip install psutil && \
-    pip install unidecode
+    pip install unidecode && \
+    pip install pyautogui
 
 COPY . /app/
 
