@@ -40,4 +40,6 @@ COPY . /app/
 # RUN google-chrome-stable --version
 
 # Comando para iniciar o script monitoramento.py
-CMD ["python", "app-telegram-monitoramento.py"]
+# CMD ["python", "app-telegram-monitoramento.py"]
+CMD ["Xvfb", ":99", "-screen", "0", "1024x768x24", "&", "python", "app-telegram-monitoramento.py"]
+
